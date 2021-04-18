@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "479048284825",
+    "project_id": "audiotest-1e47a",
+    "storage_bucket": "audiotest-1e47a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479048284825:android:6bd7f14f9a8941dd6cd608",
+        "android_client_info": {
+          "package_name": "com.example.authen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "479048284825-f2kcar9ikrjc5duumukhl0104d610m69.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAolDmWcF_dxI1JVx0C1K0Rw3buvJUy6-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "479048284825-f2kcar9ikrjc5duumukhl0104d610m69.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
