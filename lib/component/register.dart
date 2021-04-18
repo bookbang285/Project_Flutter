@@ -21,6 +21,41 @@ class _nameState extends State<register> {
   String password;
   String password2;
 
+  void changes(String test, String mode) {
+    if (mode == "email")
+      email = test;
+    else if (mode == "password")
+      password = test;
+    else if (mode == "password2") password2 = test;
+  }
+
+  Widget textfield1(String text, String func, bool obscure) {
+    return TextField(
+      style: TextStyle(
+        color: Colors.white,
+        fontFamily: 'FiraCode',
+        fontSize: 15,
+      ),
+      onChanged: (word) => changes(word, '$func'),
+      //onChanged: (pass) => password = pass,
+      obscureText: obscure,
+      decoration: InputDecoration(
+        enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: HexColor("000065"), width: 2.5),
+            borderRadius: BorderRadius.circular(30)),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: HexColor("000065"), width: 2.5),
+          borderRadius: BorderRadius.circular(30),
+        ),
+        labelText: '$text',
+        labelStyle: TextStyle(
+          color: Colors.white,
+          fontFamily: 'FiraCode',
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +64,7 @@ class _nameState extends State<register> {
           'Register',
           style: TextStyle(
             fontSize: 25,
+            fontFamily: 'FiraCode',
           ),
         ),
         backgroundColor: Colors.transparent,
@@ -50,58 +86,11 @@ class _nameState extends State<register> {
               padding: EdgeInsets.all(12),
               child: Column(
                 children: [
-                  TextField(
-                    style: TextStyle(color: Colors.white),
-                    onChanged: (mail) => email = mail,
-                    decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: HexColor("000065"), width: 2.5),
-                            borderRadius: BorderRadius.circular(30)),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: HexColor("000065"), width: 2.5),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        labelText: 'email',
-                        labelStyle: TextStyle(color: Colors.white)),
-                  ),
+                  textfield1('email', "email", false),
                   Text(""),
-                  TextField(
-                    style: TextStyle(color: Colors.white),
-                    onChanged: (pass) => password = pass,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: HexColor("000065"), width: 2.5),
-                            borderRadius: BorderRadius.circular(30)),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: HexColor("000065"), width: 2.5),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        labelText: 'password',
-                        labelStyle: TextStyle(color: Colors.white)),
-                  ),
+                  textfield1('password', "password", true),
                   Text(""),
-                  TextField(
-                    style: TextStyle(color: Colors.white),
-                    onChanged: (pass) => password2 = pass,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: HexColor("000065"), width: 2.5),
-                            borderRadius: BorderRadius.circular(30)),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: HexColor("000065"), width: 2.5),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        labelText: 'confirm password',
-                        labelStyle: TextStyle(color: Colors.white)),
-                  )
+                  textfield1('comfirm password', "password2", true),
                 ],
               ),
             ),
@@ -122,14 +111,18 @@ class _nameState extends State<register> {
     return Container(
         constraints: BoxConstraints.expand(width: 300, height: 50),
         child: InkWell(
-          child: Text("Create User",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, color: Colors.white)),
+          child: Text(
+            "Create User",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.white,
+              fontFamily: 'FiraCode',
+            ),
+          ),
           onTap: () async {
-            if (password.isEmpty || password.isEmpty || email.isEmpty) {
-              EasyLoading.showInfo("asdasd");
-            } else if (password != password2) {
-              EasyLoading.showInfo("asdasd");
+            if (password != password2) {
+              EasyLoading.showInfo("password is not matched");
             } else
               await createUser();
           },

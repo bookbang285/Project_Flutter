@@ -52,7 +52,10 @@ class _nameState extends State<sec> {
         final user = snap.data;
         return Text(
           '${user.email}',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: Colors.white,
+            fontFamily: 'FiraCode',
+          ),
         );
       },
     ),
