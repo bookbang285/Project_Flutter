@@ -17,6 +17,7 @@ class Signin extends StatefulWidget {
   _SigninState createState() => _SigninState();
 }
 
+//// Class Hex Color
 class HexColor extends Color {
   static int _getColorFromHex(String hexColor) {
     hexColor = hexColor.toUpperCase().replaceAll("#", "");
@@ -28,6 +29,7 @@ class HexColor extends Color {
 
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 }
+/////
 
 class _SigninState extends State<Signin> {
   String status;
@@ -42,8 +44,40 @@ class _SigninState extends State<Signin> {
     EasyLoading.init();
   }
 
-  @override //+
+  void changes(String test, String mode) {
+    if (mode == 'email')
+      email = test;
+    else if (mode == 'password') password = test;
+  }
 
+  Widget textfield1(String text, String func, bool obscure) {
+    return TextField(
+      style: TextStyle(
+        color: Colors.white,
+        fontFamily: 'FiraCode',
+        fontSize: 15,
+      ),
+      onChanged: (word) => changes(word, '$func'),
+      //onChanged: (pass) => password = pass,
+      obscureText: obscure,
+      decoration: InputDecoration(
+        enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: HexColor("000065"), width: 2.5),
+            borderRadius: BorderRadius.circular(30)),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: HexColor("000065"), width: 2.5),
+          borderRadius: BorderRadius.circular(30),
+        ),
+        labelText: '$text',
+        labelStyle: TextStyle(
+          color: Colors.white,
+          fontFamily: 'FiraCode',
+        ),
+      ),
+    );
+  }
+
+  @override //+
   Widget build(BuildContext context) {
     return Container(
       decoration: new BoxDecoration(
@@ -62,6 +96,7 @@ class _SigninState extends State<Signin> {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 20,
+                fontFamily: 'FiraCode',
               ),
             ),
           ),
@@ -69,40 +104,9 @@ class _SigninState extends State<Signin> {
             padding: EdgeInsets.all(12),
             child: Column(
               children: [
-                TextField(
-                  style: TextStyle(color: Colors.white),
-                  onChanged: (mail) => email = mail,
-                  decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: HexColor("000065"), width: 2.5),
-                          borderRadius: BorderRadius.circular(30)),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: HexColor("000065"), width: 2.5),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      labelText: 'email',
-                      labelStyle: TextStyle(color: Colors.white)),
-                ),
+                textfield1('email', "email", false),
                 Text(""),
-                TextField(
-                  style: TextStyle(color: Colors.white),
-                  onChanged: (pass) => password = pass,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: HexColor("000065"), width: 2.5),
-                          borderRadius: BorderRadius.circular(30)),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: HexColor("000065"), width: 2.5),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      labelText: 'password',
-                      labelStyle: TextStyle(color: Colors.white)),
-                )
+                textfield1('password', "password", true),
               ],
             ),
           ),
@@ -115,7 +119,10 @@ class _SigninState extends State<Signin> {
                   children: [
                     Text(
                       "Forgot Password",
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'FiraCode',
+                      ),
                     )
                   ],
                 )
@@ -139,18 +146,19 @@ class _SigninState extends State<Signin> {
     );
   }
 
-  void onClickSignOut() async {
-    await FirebaseAuth.instance.signOut();
-    EasyLoading.showSuccess("Sign-Out Complete");
-  }
-
   Container buildRegister() {
     return Container(
         constraints: BoxConstraints.expand(width: 300, height: 50),
         child: InkWell(
-          child: Text("Register",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, color: Colors.white)),
+          child: Text(
+            "Register",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.white,
+              fontFamily: 'FiraCode',
+            ),
+          ),
           onTap: () {
             Navigator.push(
               context,
@@ -170,9 +178,15 @@ class _SigninState extends State<Signin> {
     return Container(
         constraints: BoxConstraints.expand(width: 300, height: 50),
         child: InkWell(
-          child: Text("Sign in",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, color: Colors.white)),
+          child: Text(
+            "Sign in",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.white,
+              fontFamily: 'FiraCode',
+            ),
+          ),
           onTap: () {
             onClickSignIn();
           },
@@ -183,6 +197,72 @@ class _SigninState extends State<Signin> {
         ),
         margin: EdgeInsets.only(top: 16),
         padding: EdgeInsets.all(12));
+  }
+
+  void onClickSignOut() async {
+    await FirebaseAuth.instance.signOut();
+    EasyLoading.showSuccess("Sign-Out Complete");
+  }
+
+  Future onClickSignIn() async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: "$email", password: "$password");
+      EasyLoading.showSuccess("Sign-in Complete");
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => sec()),
+      );
+      print("Email : $email");
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+        EasyLoading.showInfo("No user found for that email.");
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+        EasyLoading.showInfo("Wrong password provided for that user.");
+      } else {
+        EasyLoading.showInfo("Please Enter Email and Password");
+      }
+    } catch (error) {
+      print(e);
+    }
+  }
+
+  /*
+  Future createUser() async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: "$email", password: "$password");
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The Password is to weak');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void createData() {
+    final CollectionReference users =
+        FirebaseFirestore.instance.collection('users');
+    users
+        .add({'name': 'Dawn Breaker', 'type': 'strength', 'hp': 1500})
+        .then((value) => print('success'))
+        .catchError((e) => print(e));
+  }
+
+  void UpdateData() {
+    final CollectionReference users =
+        FirebaseFirestore.instance.collection('users');
+    users
+        .doc("RLAw9CXWbpQlEkzOo0Uh")
+        .update({'hp': 1200, 'name': 'Darius', 'type': 'Mage'})
+        .then((value) => print('updated!'))
+        .catchError((e) => print('update error'));
   }
 
   Container buildButtonSignOut() {
@@ -254,62 +334,5 @@ class _SigninState extends State<Signin> {
         margin: EdgeInsets.only(top: 16),
         padding: EdgeInsets.all(12));
   }
-
-  Future onClickSignIn() async {
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: "$email", password: "$password");
-      EasyLoading.showSuccess("Sign-in Complete");
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => sec()),
-      );
-      print("Email : $email");
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      } else {
-        EasyLoading.showInfo("Please Enter Email and Password");
-      }
-    } catch (error) {
-      print(e);
-    }
-  }
-
-  Future createUser() async {
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-              email: "$email", password: "$password");
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The Password is to weak');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  void createData() {
-    final CollectionReference users =
-        FirebaseFirestore.instance.collection('users');
-    users
-        .add({'name': 'Dawn Breaker', 'type': 'strength', 'hp': 1500})
-        .then((value) => print('success'))
-        .catchError((e) => print(e));
-  }
-
-  void UpdateData() {
-    final CollectionReference users =
-        FirebaseFirestore.instance.collection('users');
-    users
-        .doc("RLAw9CXWbpQlEkzOo0Uh")
-        .update({'hp': 1200, 'name': 'Darius', 'type': 'Mage'})
-        .then((value) => print('updated!'))
-        .catchError((e) => print('update error'));
-  }
+  */
 }
