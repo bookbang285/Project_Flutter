@@ -140,6 +140,7 @@ class _nameState extends State<register> {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
               email: "$email", password: "$password");
+      createDataUsers('$email');
       EasyLoading.showSuccess("Register Complete");
       Navigator.push(
         context,
@@ -156,5 +157,17 @@ class _nameState extends State<register> {
     } catch (e) {
       print(e);
     }
+  }
+
+  void createDataUsers(String email) {
+    int number = email.indexOf('@');
+    String cut = email.substring(0, number);
+    final CollectionReference users =
+        FirebaseFirestore.instance.collection('users');
+    users
+        .doc(email)
+        .set({'email': '$email', 'name': '$cut'})
+        .then((value) => print('success'))
+        .catchError((e) => print(e));
   }
 }
