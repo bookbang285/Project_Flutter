@@ -58,7 +58,6 @@ class _SigninState extends State<Signin> {
         fontSize: 15,
       ),
       onChanged: (word) => changes(word, '$func'),
-      //onChanged: (pass) => password = pass,
       obscureText: obscure,
       decoration: InputDecoration(
         enabledBorder: OutlineInputBorder(
@@ -110,35 +109,12 @@ class _SigninState extends State<Signin> {
               ],
             ),
           ),
-          Container(
-            padding: EdgeInsets.all(12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Column(
-                  children: [
-                    Text(
-                      "Forgot Password",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'FiraCode',
-                      ),
-                    )
-                  ],
-                )
-              ],
-            ),
-          ),
           Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               buildButtonSignIn(),
-              //buildButtonSignOut(),
               buildRegister(),
-
-              //buildButtonCreateData(),
-              //buildButtonUpdateData(),
             ],
           )
         ],
@@ -228,111 +204,4 @@ class _SigninState extends State<Signin> {
       print(e);
     }
   }
-
-  /*
-  Future createUser() async {
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-              email: "$email", password: "$password");
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The Password is to weak');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  void createData() {
-    final CollectionReference users =
-        FirebaseFirestore.instance.collection('users');
-    users
-        .add({'name': 'Dawn Breaker', 'type': 'strength', 'hp': 1500})
-        .then((value) => print('success'))
-        .catchError((e) => print(e));
-  }
-
-  void UpdateData() {
-    final CollectionReference users =
-        FirebaseFirestore.instance.collection('users');
-    users
-        .doc("RLAw9CXWbpQlEkzOo0Uh")
-        .update({'hp': 1200, 'name': 'Darius', 'type': 'Mage'})
-        .then((value) => print('updated!'))
-        .catchError((e) => print('update error'));
-  }
-
-  Container buildButtonSignOut() {
-    return Container(
-        constraints: BoxConstraints.expand(width: 300, height: 50),
-        child: InkWell(
-          child: Text("Sign Out",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, color: Colors.white)),
-          onTap: () {
-            onClickSignOut();
-          },
-        ),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30), color: Colors.blue),
-        margin: EdgeInsets.only(top: 16),
-        padding: EdgeInsets.all(12));
-  }
-
-  Container buildButtonCreate() {
-    return Container(
-        constraints: BoxConstraints.expand(width: 300, height: 50),
-        child: InkWell(
-          child: Text("Register",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, color: Colors.white)),
-          onTap: () async {
-            await createUser();
-          },
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: Colors.black54, width: 2.5),
-        ),
-        margin: EdgeInsets.only(top: 16),
-        padding: EdgeInsets.all(12));
-  }
-
-  Container buildButtonCreateData() {
-    return Container(
-        constraints: BoxConstraints.expand(width: 300, height: 50),
-        child: InkWell(
-          child: Text("Create Data",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, color: Colors.white)),
-          onTap: () {
-            createData();
-          },
-        ),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30), color: Colors.blue),
-        margin: EdgeInsets.only(top: 16),
-        padding: EdgeInsets.all(12));
-  }
-
-  Container buildButtonUpdateData() {
-    return Container(
-        constraints: BoxConstraints.expand(width: 300, height: 50),
-        child: InkWell(
-          child: Text("Update",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, color: Colors.white)),
-          onTap: () {
-            UpdateData();
-          },
-        ),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30), color: Colors.blue),
-        margin: EdgeInsets.only(top: 16),
-        padding: EdgeInsets.all(12));
-  }
-  */
 }

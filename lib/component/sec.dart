@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:authentication_login/component/signin.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:group_list_view/group_list_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+
+String name1;
 
 class sec extends StatefulWidget {
   sec({Key key}) : super(key: key);
@@ -17,35 +18,64 @@ class sec extends StatefulWidget {
 }
 
 class _nameState extends State<sec> {
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-  StreamSubscription<QueryDocumentSnapshot> subscription;
-  List<DocumentSnapshot> snapshots;
-
+  String namecut;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Signin()),
+            );
+            onClickSignOut();
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          ),
+        ),
         title: textt,
+        flexibleSpace: Image(
+          image: AssetImage('assets/images/backc.png'),
+          fit: BoxFit.cover,
+        ),
+        backgroundColor: Colors.transparent,
       ),
       extendBodyBehindAppBar: true,
-      body: bg(),
+      body: Container(
+        child: bg(),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.black,
+        focusColor: Colors.white,
+        onPressed: () {
+          createDataLog(name1);
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 
-  //List log;
+  Widget textt = Container(
+    child: StreamBuilder<User>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snap) {
+        final user = snap.data;
+        name1 = '${user.email}';
+        return Text(
+          '${user.email}',
+          style: TextStyle(
+            color: Colors.black,
+            fontFamily: 'FiraCode',
+          ),
+        );
+      },
+    ),
+  );
+
   Container bg() {
-    /*
-    FirebaseFirestore.instance
-        .collection("Log")
-        .where("name")
-        .get()
-        .then((querySnapshot) {
-      querySnapshot.docs.forEach((result) {
-        log = result.data().values.toList();
-        print("date $log");
-      });
-    });
-    */
     return Container(
       decoration: new BoxDecoration(
         image: DecorationImage(
@@ -54,146 +84,77 @@ class _nameState extends State<sec> {
           colorFilter: ColorFilter.mode(Colors.black45, BlendMode.darken),
         ),
       ),
-      child: Expanded(
-        child: ListView.builder(
-          padding: EdgeInsets.all(10.0),
-          itemCount: 4,
-          itemBuilder: (context, index) => Container(
-            padding: EdgeInsets.all(5.0),
-            child: Material(
-              elevation: 8.0,
-              borderRadius: BorderRadius.circular(5.0),
-              color: Colors.white.withOpacity(0.7),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Text(
-                    'asdasd',
-                    style: TextStyle(
-                        fontSize: 16.0,
-                        color: Colors.black,
-                        fontFamily: 'FiraCode'),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Text(
-                    'asdasd',
-                    style: TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.grey,
-                        fontFamily: 'FiraCode'),
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+      child: RealtimeCollection(),
     );
   }
-
-/*
-  Container buildListview() {
-    return new Container(
-      color: const Color(0xFF00FF00),
-      child: Expanded(
-        child: ListView.builder(
-          padding: EdgeInsets.all(10.0),
-          itemCount: 20,
-          itemBuilder: (BuildContext context, int index) {
-            return Card(
-              child: Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'asda',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        color: Colors.black,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5.0,
-                    ),
-                    Text(
-                      'asdasd',
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-*/
-
-  Widget textt = Container(
-    child: StreamBuilder<User>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snap) {
-        final user = snap.data;
-
-        return Text(
-          '${user.email}',
-          style: TextStyle(
-            color: Colors.white,
-            fontFamily: 'FiraCode',
-          ),
-        );
-      },
-    ),
-  );
-
-  int countLog = 1;
 
   void createDataLog(String name) {
-    var now = DateTime.now();
+    String datenow = DateTime.now().toString().substring(0, 19);
+
     final CollectionReference users =
         FirebaseFirestore.instance.collection('Log');
     users
-        .doc(countLog.toString())
-        .set({'name': '$name', 'date': '$now'})
+        .doc(datenow)
+        .set({'name': '$name', 'date': '$datenow'})
         .then((value) => print('success'))
         .catchError((e) => print(e));
-    countLog++;
   }
 
   void onClickSignOut() async {
     await FirebaseAuth.instance.signOut();
     EasyLoading.showSuccess("Sign-Out Complete");
   }
+}
 
-  Container buildButtonSignOut() {
-    return Container(
-        constraints: BoxConstraints.expand(width: 300, height: 50),
-        child: InkWell(
-          child: Text("Sign Out",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, color: Colors.white)),
-          onTap: () {
-            onClickSignOut();
-          },
+class RealtimeCollection extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection("Log").snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: Column(
+              children: <Widget>[
+                CircularProgressIndicator(),
+                Text("Loading . . . "),
+              ],
+            ),
+          );
+        } else {
+          return new Container(
+            child: Expanded(
+              child: new ListView(
+                padding: EdgeInsets.all(10.0),
+                children: makeListWiget(snapshot),
+              ),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  List<Widget> makeListWiget(AsyncSnapshot snapshot) {
+    return snapshot.data.docs.map<Widget>((document) {
+      return ListTile(
+        title: Text(
+          document["name"],
+          style: TextStyle(
+            fontFamily: 'FiraCode',
+            fontSize: 17,
+            color: Colors.white,
+          ),
         ),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30), color: Colors.blue),
-        margin: EdgeInsets.only(top: 16),
-        padding: EdgeInsets.all(12));
+        subtitle: Text(
+          document["date"],
+          style: TextStyle(
+            fontFamily: 'FiraCode',
+            fontSize: 15,
+            color: Colors.white54,
+          ),
+        ),
+      );
+    }).toList();
   }
 }
