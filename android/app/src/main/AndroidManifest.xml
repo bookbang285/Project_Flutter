@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.authent">
    <application
-        android:label="Flutter App"
+        android:label="Bang App"
         android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"

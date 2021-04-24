@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import '../HexColor.dart';
 import 'signin.dart';
 
 class register extends StatefulWidget {
@@ -16,45 +17,9 @@ class register extends StatefulWidget {
 }
 
 class _nameState extends State<register> {
-  //String status;
   String email;
   String password;
   String password2;
-
-  void changes(String test, String mode) {
-    if (mode == "email")
-      email = test;
-    else if (mode == "password")
-      password = test;
-    else if (mode == "password2") password2 = test;
-  }
-
-  Widget textfield1(String text, String func, bool obscure) {
-    return TextField(
-      style: TextStyle(
-        color: Colors.white,
-        fontFamily: 'FiraCode',
-        fontSize: 15,
-      ),
-      onChanged: (word) => changes(word, '$func'),
-      //onChanged: (pass) => password = pass,
-      obscureText: obscure,
-      decoration: InputDecoration(
-        enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: HexColor("000065"), width: 2.5),
-            borderRadius: BorderRadius.circular(30)),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: HexColor("000065"), width: 2.5),
-          borderRadius: BorderRadius.circular(30),
-        ),
-        labelText: '$text',
-        labelStyle: TextStyle(
-          color: Colors.white,
-          fontFamily: 'FiraCode',
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,6 +72,40 @@ class _nameState extends State<register> {
     );
   }
 
+  void changes(String test, String mode) {
+    if (mode == "email")
+      email = test;
+    else if (mode == "password")
+      password = test;
+    else if (mode == "password2") password2 = test;
+  }
+
+  Widget textfield1(String text, String func, bool obscure) {
+    return TextField(
+      style: TextStyle(
+        color: Colors.white,
+        fontFamily: 'FiraCode',
+        fontSize: 15,
+      ),
+      onChanged: (word) => changes(word, '$func'),
+      obscureText: obscure,
+      decoration: InputDecoration(
+        enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: HexColor("000065"), width: 2.5),
+            borderRadius: BorderRadius.circular(30)),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: HexColor("000065"), width: 2.5),
+          borderRadius: BorderRadius.circular(30),
+        ),
+        labelText: '$text',
+        labelStyle: TextStyle(
+          color: Colors.white,
+          fontFamily: 'FiraCode',
+        ),
+      ),
+    );
+  }
+
   Container buildButtonCreate() {
     return Container(
         constraints: BoxConstraints.expand(width: 300, height: 50),
@@ -140,7 +139,6 @@ class _nameState extends State<register> {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
               email: "$email", password: "$password");
-      createDataUsers('$email');
       EasyLoading.showSuccess("Register Complete");
       Navigator.push(
         context,
@@ -157,17 +155,5 @@ class _nameState extends State<register> {
     } catch (e) {
       print(e);
     }
-  }
-
-  void createDataUsers(String email) {
-    int number = email.indexOf('@');
-    String cut = email.substring(0, number);
-    final CollectionReference users =
-        FirebaseFirestore.instance.collection('users');
-    users
-        .doc(email)
-        .set({'email': '$email', 'name': '$cut'})
-        .then((value) => print('success'))
-        .catchError((e) => print(e));
   }
 }

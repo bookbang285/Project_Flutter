@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:authentication_login/component/signin.dart';
+import 'package:authentication_login/realtimecollect/RealTimeCollection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -18,7 +19,6 @@ class sec extends StatefulWidget {
 }
 
 class _nameState extends State<sec> {
-  String namecut;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,58 +103,5 @@ class _nameState extends State<sec> {
   void onClickSignOut() async {
     await FirebaseAuth.instance.signOut();
     EasyLoading.showSuccess("Sign-Out Complete");
-  }
-}
-
-class RealtimeCollection extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection("Log").snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Center(
-            child: Column(
-              children: <Widget>[
-                CircularProgressIndicator(),
-                Text("Loading . . . "),
-              ],
-            ),
-          );
-        } else {
-          return new Container(
-            child: Expanded(
-              child: new ListView(
-                padding: EdgeInsets.all(10.0),
-                children: makeListWiget(snapshot),
-              ),
-            ),
-          );
-        }
-      },
-    );
-  }
-
-  List<Widget> makeListWiget(AsyncSnapshot snapshot) {
-    return snapshot.data.docs.map<Widget>((document) {
-      return ListTile(
-        title: Text(
-          document["name"],
-          style: TextStyle(
-            fontFamily: 'FiraCode',
-            fontSize: 17,
-            color: Colors.white,
-          ),
-        ),
-        subtitle: Text(
-          document["date"],
-          style: TextStyle(
-            fontFamily: 'FiraCode',
-            fontSize: 15,
-            color: Colors.white54,
-          ),
-        ),
-      );
-    }).toList();
   }
 }

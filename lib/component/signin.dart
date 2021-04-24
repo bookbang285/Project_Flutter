@@ -9,6 +9,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import '../HexColor.dart';
+
 class Signin extends StatefulWidget {
   final String status;
   const Signin({Key key, this.status}) : super(key: key);
@@ -17,22 +19,7 @@ class Signin extends StatefulWidget {
   _SigninState createState() => _SigninState();
 }
 
-//// Class Hex Color
-class HexColor extends Color {
-  static int _getColorFromHex(String hexColor) {
-    hexColor = hexColor.toUpperCase().replaceAll("#", "");
-    if (hexColor.length == 6) {
-      hexColor = "FF" + hexColor;
-    }
-    return int.parse(hexColor, radix: 16);
-  }
-
-  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
-}
-/////
-
 class _SigninState extends State<Signin> {
-  String status;
   String email;
   String password;
 
@@ -42,38 +29,6 @@ class _SigninState extends State<Signin> {
   void initState() {
     super.initState();
     EasyLoading.init();
-  }
-
-  void changes(String test, String mode) {
-    if (mode == 'email')
-      email = test;
-    else if (mode == 'password') password = test;
-  }
-
-  Widget textfield1(String text, String func, bool obscure) {
-    return TextField(
-      style: TextStyle(
-        color: Colors.white,
-        fontFamily: 'FiraCode',
-        fontSize: 15,
-      ),
-      onChanged: (word) => changes(word, '$func'),
-      obscureText: obscure,
-      decoration: InputDecoration(
-        enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: HexColor("000065"), width: 2.5),
-            borderRadius: BorderRadius.circular(30)),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: HexColor("000065"), width: 2.5),
-          borderRadius: BorderRadius.circular(30),
-        ),
-        labelText: '$text',
-        labelStyle: TextStyle(
-          color: Colors.white,
-          fontFamily: 'FiraCode',
-        ),
-      ),
-    );
   }
 
   @override //+
@@ -113,8 +68,8 @@ class _SigninState extends State<Signin> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              buildButtonSignIn(),
-              buildRegister(),
+              buildButton("signin", "SignIn"),
+              buildButton("register", "Register"),
             ],
           )
         ],
@@ -122,12 +77,53 @@ class _SigninState extends State<Signin> {
     );
   }
 
-  Container buildRegister() {
+  void changes(String test, String mode) {
+    if (mode == 'email')
+      email = test;
+    else if (mode == 'password') password = test;
+  }
+
+  Widget textfield1(String text, String func, bool obscure) {
+    return TextField(
+      style: TextStyle(
+        color: Colors.white,
+        fontFamily: 'FiraCode',
+        fontSize: 15,
+      ),
+      onChanged: (word) => changes(word, '$func'),
+      obscureText: obscure,
+      decoration: InputDecoration(
+        enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: HexColor("000065"), width: 2.5),
+            borderRadius: BorderRadius.circular(30)),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: HexColor("000065"), width: 2.5),
+          borderRadius: BorderRadius.circular(30),
+        ),
+        labelText: '$text',
+        labelStyle: TextStyle(
+          color: Colors.white,
+          fontFamily: 'FiraCode',
+        ),
+      ),
+    );
+  }
+
+  void con(String check) {
+    if (check == "register") {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => register()));
+    } else if (check == "signin") {
+      onClickSignIn();
+    }
+  }
+
+  Container buildButton(String state, String text) {
     return Container(
         constraints: BoxConstraints.expand(width: 300, height: 50),
         child: InkWell(
           child: Text(
-            "Register",
+            text,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 18,
@@ -136,10 +132,7 @@ class _SigninState extends State<Signin> {
             ),
           ),
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => register()),
-            );
+            con(state);
           },
         ),
         decoration: BoxDecoration(
@@ -148,36 +141,6 @@ class _SigninState extends State<Signin> {
         ),
         margin: EdgeInsets.only(top: 16),
         padding: EdgeInsets.all(12));
-  }
-
-  Container buildButtonSignIn() {
-    return Container(
-        constraints: BoxConstraints.expand(width: 300, height: 50),
-        child: InkWell(
-          child: Text(
-            "Sign in",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.white,
-              fontFamily: 'FiraCode',
-            ),
-          ),
-          onTap: () {
-            onClickSignIn();
-          },
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: Colors.black54, width: 2.5),
-        ),
-        margin: EdgeInsets.only(top: 16),
-        padding: EdgeInsets.all(12));
-  }
-
-  void onClickSignOut() async {
-    await FirebaseAuth.instance.signOut();
-    EasyLoading.showSuccess("Sign-Out Complete");
   }
 
   Future onClickSignIn() async {
